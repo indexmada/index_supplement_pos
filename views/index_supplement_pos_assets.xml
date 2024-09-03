@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="assets_backend" name="iap assets" inherit_id="web.assets_backend">
+        <xpath expr="." position="inside">
+            <script type="text/javascript" src="/index_supplement_pos/static/src/js/pos_orderline.js"></script>
+            <script type="text/javascript" src="/index_supplement_pos/static/src/js/ProductPopup.js"></script>
+            <script type="text/javascript" src="/index_supplement_pos/static/src/js/screens.js"></script>
+        </xpath>
+    </template>
+</odoo>

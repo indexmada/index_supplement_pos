@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-extend='Orderline'>
+        <t t-jquery='.product-name' t-operation='after'>
+            <span class="btn btn-primary btn-xs btn-acc deleteorder-button" data-toggle="tooltip" style="cursor: pointer;" t-att-title="'add accompaniment for ' + line.get_product().display_name">
+                <i class="fa fa-plus-circle" aria-hidden="true"></i>
+            </span>
+        </t>
+        <t t-jquery=".info-list" t-operation="append">
+            <t t-if="line.accompaniment_note">
+                <li class="info orderline-note" style="color: red; font-weight: bold;">
+                    <i aria-label="acc" title="acc"/>
+                    <t t-esc="line.accompaniment_note" />
+                </li>
+            </t>
+        </t>
+    </t>
+    <t t-name="CategoryProductAcc">
+        <div role="dialog" class="modal-dialog">
+            <div class="popup popup-couponproducts" style="width: 1200px; height: 600px;">
+                <header class="title">
+                    <t t-esc="widget.title" />
+                </header>
+                <span class="body">
+                    <div class="row" style="height: 420px; overflow: scroll; justify-content: start; display: flex; flex-wrap: wrap; align-content: start;">
+                        <t t-if="widget.productsToDisplay and widget.productsToDisplay.length">
+                            <t t-foreach="widget.productsToDisplay || []" t-as="product">
+                                <article class='product oe_click_product' t-att-data-orderline-id="widget.orderline" t-att-data-product-id="product.id" tabindex="0" t-attf-aria-labelledby="article_product_#{product.id}">
+                                    <div class="product-img">
+                                        <img t-att-src='product.image_url' alt="Product image"/>
+                                        <t t-if="product.selected">
+                                            <span class="price-tag" style="background: green;">
+                                                <i class="fa fa-check-circle" />
+                                            </span>
+                                        </t>
+                                    </div>
+                                    <div class="product-name" t-attf-id="article_product_#{product.id}">
+                                        <t t-esc="product.display_name"/>
+                                    </div>
+                                </article>
+                            </t>
+                        </t>
+                        <t t-else="">
+                            <div class="alert alert-info">No products found</div>
+                        </t>
+                    </div>
+                </span>
+                <div class="footer">
+                    <div class="button confirm">
+                        <t t-esc="widget.confirmText" />
+                    </div>
+                    <div class="button cancel">
+                        Cancel
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>
