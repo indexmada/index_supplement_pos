@@ -17,12 +17,12 @@
     </t>
     <t t-name="CategoryProductAcc">
         <div role="dialog" class="modal-dialog">
-            <div class="popup popup-couponproducts" style="width: 1200px; height: 600px;">
+            <div class="popup popup-couponproducts" style="width: 50%; height: 400px;">
                 <header class="title">
                     <t t-esc="widget.title" />
                 </header>
                 <span class="body">
-                    <div class="row" style="height: 420px; overflow: scroll; justify-content: start; display: flex; flex-wrap: wrap; align-content: start;">
+                    <div class="row" style="height: 250px; overflow: scroll; justify-content: start; display: flex; flex-wrap: wrap; align-content: start;">
                         <t t-if="widget.productsToDisplay and widget.productsToDisplay.length">
                             <t t-foreach="widget.productsToDisplay || []" t-as="product">
                                 <article class='product oe_click_product' t-att-data-orderline-id="widget.orderline" t-att-data-product-id="product.id" tabindex="0" t-attf-aria-labelledby="article_product_#{product.id}">
