@@ -18,8 +18,24 @@ odoo.define('index_supplement_pos.screems', function (require) {
             return el_node;
         },
 
+        _get_catergory_acc: function(){
+            var accompanimentCategoryIds = [];
+            // Iterate over each entry in the category_by_id object
+            for (var categoryId in this.pos.db.category_by_id) {
+                if (this.pos.db.category_by_id.hasOwnProperty(categoryId)) {
+                    var category = this.pos.db.category_by_id[categoryId];
+                    
+                    // Check if the category has 'is_accompaniment' set to true
+                    if (category.is_accompaniment) {
+                        accompanimentCategoryIds.push(parseInt(categoryId));
+                    }
+                }
+            }
+            return accompanimentCategoryIds;
+        },
+
         productsToDisplay(orderline) {
-            const categAccFilter = this.pos.product_categories.filter(categ => categ.is_accompaniment).map(categ => categ.id);
+            const categAccFilter = this._get_catergory_acc()
             var products = [];
             var acc_line = orderline.accompaniment_ids.map(acc => acc.product_id);
             categAccFilter.forEach(categ => {

@@ -31,7 +31,8 @@ odoo.define('index_supplement_pos.pos_orderline', function (require) {
     //     'after': "pos.order.line"
     // });
 
-    models.load_fields("product.category",  "is_accompaniment");
+
+    models.load_fields('pos.category', 'is_accompaniment');
 
     models.load_fields('pos.order.line', ['accompaniment_ids', "accompaniment_note"]);
 
