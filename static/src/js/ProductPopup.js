@@ -30,8 +30,17 @@ odoo.define('index_supplement_pos.ProductPopup', function(require) {
             this.pos.gui.close_popup();
         },
 
+        _get_all_product: function(){
+            var products = [];
+            Object.entries(this.productsToDisplay).forEach(([key, value]) => {
+                products.push(value.products);
+            });
+            return products[0];
+        },
+
         confirm: function(){
-            const product_selected = this.productsToDisplay.filter(p => p.selected == true);
+            var products = this._get_all_product();
+            const product_selected = products.filter(p => p.selected == true);
             this.onAddAccompanimentClick(product_selected);
             this.pos.gui.close_popup();
         },
@@ -66,7 +75,8 @@ odoo.define('index_supplement_pos.ProductPopup', function(require) {
             const productID = data.productId || null;
             if (!productID) return;
             var orderline = data.orderlineId || null;
-            var product = this.productsToDisplay.find(product => product.id == parseInt(productID));
+            var products = this._get_all_product();
+            var product = products.find(product => product.id == parseInt(productID));
             if (product.selected){
                 product.selected = false;
             } else {
