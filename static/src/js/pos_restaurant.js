@@ -1,16 +1,7 @@
 odoo.define('index_supplement_pos.pos_restaurant', function (require) {
     "use strict";
-    
-    var PosBaseWidget = require('point_of_sale.BaseWidget');
-    var chrome = require('point_of_sale.chrome');
-    var gui = require('point_of_sale.gui');
+
     var models = require('point_of_sale.models');
-    var screens = require('point_of_sale.screens');
-    var core = require('web.core');
-    var rpc = require('web.rpc');
-    
-    var QWeb = core.qweb;
-    var _t = core._t;
 
     var _super_posmodel = models.PosModel.prototype;
     models.PosModel = models.PosModel.extend({
