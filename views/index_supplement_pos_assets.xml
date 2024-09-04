@@ -12,5 +12,8 @@
         <xpath expr="//link[@id='pos-stylesheet']" position="after">
             <link rel="stylesheet" href="/index_supplement_pos/static/src/scss/pos_suppl_style.scss"/>
         </xpath>
+          <xpath expr="." position="inside">
+              <script type="text/javascript" src="/index_supplement_pos/static/src/js/pos_restaurant.js"></script>
+          </xpath>
     </template>
 </odoo>
