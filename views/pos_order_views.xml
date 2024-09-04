@@ -8,14 +8,13 @@
         <field name="inherit_id" ref="point_of_sale.view_pos_pos_form"/>
         <field name="arch" type="xml">
             <xpath expr="//notebook" position="inside">
-                <page string="Accompaniment">
-                    <group name="stock" string="Stock Move">
-                        <field name="picking_accompaniment_id" string="Picking"/>
+                <page string="Acc &amp; Sauces">
+                    <group name="stock">
+                        <field name="picking_accompaniment_id" string="Mouvement"/>
                     </group>
-                    <group name="accompaniment" string="Accompaniment Details">
+                    <group name="accompaniment" string="Détails">
                         <field name="accompaniment_ids" colspan="4" nolabel="1">
                             <tree string="Order lines" editable="bottom">
-                                <field name="name"/>
                                 <field name="product_id"/>
                                 <field name="quantity"/>
                                 <field name="line_id" invisible="1"/>
