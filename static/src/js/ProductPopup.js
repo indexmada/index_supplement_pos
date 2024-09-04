@@ -26,11 +26,6 @@ odoo.define('index_supplement_pos.ProductPopup', function(require) {
         },
 
         _initializedContentData: function(){
-            this.productsToDisplay.forEach(product => {
-                if (!product.not_saved){
-                    product.selected = false;
-                }
-            })
             this.renderElement();
             this.pos.gui.close_popup();
         },

@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates id="template" xml:space="preserve">
     <t t-extend='Orderline'>
-        <t t-jquery='.product-name' t-operation='after'>
-            <span class="btn btn-primary btn-xs btn-acc deleteorder-button" data-toggle="tooltip" style="cursor: pointer;" t-att-title="'add accompaniment for ' + line.get_product().display_name">
-                <i class="fa fa-plus-circle" aria-hidden="true"></i>
-            </span>
-        </t>
         <t t-jquery=".info-list" t-operation="append">
             <t t-if="line.accompaniment_note">
                 <li class="info orderline-note" style="color: red; font-weight: bold;">
@@ -14,30 +9,54 @@
                 </li>
             </t>
         </t>
+        <t t-jquery=".info-list" t-operation="after">
+            <div class="unique-container btn-xs btn-acc deleteorder-button" data-toggle="tooltip" style="cursor: pointer;" t-att-title="'add accompaniment for ' + line.get_product().display_name">
+                <div class="unique-label">
+                    Acc. - Supplements
+                </div>
+            </div>
+        </t>
     </t>
     <t t-name="CategoryProductAcc">
         <div role="dialog" class="modal-dialog">
-            <div class="popup popup-couponproducts" style="width: 50%; height: 400px;">
+            <div class="popup popup-couponproducts" style="width: 51%; height: 400px;">
                 <header class="title">
                     <t t-esc="widget.title" />
                 </header>
                 <span class="body">
-                    <div class="row" style="height: 250px; overflow: scroll; justify-content: start; display: flex; flex-wrap: wrap; align-content: start;">
-                        <t t-if="widget.productsToDisplay and widget.productsToDisplay.length">
-                            <t t-foreach="widget.productsToDisplay || []" t-as="product">
-                                <article class='product oe_click_product' t-att-data-orderline-id="widget.orderline" t-att-data-product-id="product.id" tabindex="0" t-attf-aria-labelledby="article_product_#{product.id}">
-                                    <div class="product-img">
-                                        <img t-att-src='product.image_url' alt="Product image"/>
-                                        <t t-if="product.selected">
-                                            <span class="price-tag" style="background: green;">
-                                                <i class="fa fa-check-circle" />
-                                            </span>
-                                        </t>
-                                    </div>
-                                    <div class="product-name" t-attf-id="article_product_#{product.id}">
-                                        <t t-esc="product.display_name"/>
-                                    </div>
-                                </article>
+                    <div class="row oe-product-supp">
+                        <t t-if="widget.productsToDisplay">
+                            <t t-foreach="widget.productsToDisplay || []" t-as="category_per">
+                                <h3 class="oe-reorder-flex-per-product oe-adjust-title">
+                                    <t t-esc="category_per"/>
+                                </h3>
+                                <div class="oe-reorder-flex-per-product">
+                                    <t t-foreach="widget.productsToDisplay[category_per]['products'] || []" t-as="product">
+                                        <article class='product oe_click_product' t-att-data-orderline-id="widget.orderline" t-att-data-product-id="product.id" tabindex="0" t-attf-aria-labelledby="article_product_#{product.id}">
+                                            <div class="product-img">
+                                                <img t-att-src='product.image_url' alt="Product image"/>
+                                                <t t-if="product.selected">
+                                                    <span class="price-tag oe-badge-widget">
+                                                        <i class="fa fa-check-circle" />
+                                                    </span>
+                                                </t>
+                                                <t t-if="!product.to_weight">
+                                                    <span class="price-tag">
+                                                        <t t-esc="widget.format_currency(product.get_price(1, 1),'Product Price')"/>
+                                                    </span>
+                                                </t>
+                                                <t t-if="product.to_weight">
+                                                    <span class="price-tag">
+                                                        <t t-esc="widget.format_currency(product.get_price(1, 1),'Product Price')+'/'+widget.pos.units_by_id[product.uom_id[0]].name"/>
+                                                    </span>
+                                                </t>
+                                            </div>
+                                            <div class="product-name" t-attf-id="article_product_#{product.id}">
+                                                <t t-esc="product.display_name"/>
+                                            </div>
+                                        </article>
+                                    </t>
+                                </div>
                             </t>
                         </t>
                         <t t-else="">
