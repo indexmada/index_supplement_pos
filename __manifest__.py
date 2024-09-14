@@ -18,7 +18,8 @@
         "security/ir.model.access.csv",
         "views/pos_category_views.xml",
         "views/index_supplement_pos_assets.xml",
-        "views/pos_order_views.xml"
+        "views/pos_order_views.xml",
+        "views/pos_config_views.xml",
     ],
     'installable': True,
     'application': True,

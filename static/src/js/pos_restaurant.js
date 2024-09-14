@@ -3,10 +3,10 @@ odoo.define('index_supplement_pos.pos_restaurant', function (require) {
 
     var models = require('point_of_sale.models');
 
-    var _super_posmodel = models.PosModel.prototype;
+    var _super_postmodern = models.PosModel.prototype;
     models.PosModel = models.PosModel.extend({
         initialize: function(session, attributes) {
-            return _super_posmodel.initialize.call(this,session,attributes);
+            return _super_postmodern.initialize.call(this,session,attributes);
         },
 
         // changes the current table.
@@ -17,6 +17,10 @@ odoo.define('index_supplement_pos.pos_restaurant', function (require) {
         */
         set_table: async function(table) {
             var self = this;
+            // return super when required guest isn't set
+            if (!self.config.required_guest_on_table) {
+                return _super_postmodern.set_table.call(this, table);
+            }
             if (!table) { // no table ? go back to the floor plan, see ScreenSelector
                 self.set_order(null);
             } else if (self.order_to_transfer_to_different_table) {

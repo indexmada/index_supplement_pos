@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<odoo>
+    <record id="pos_config_view_form_inherit_pos_restaurant" model="ir.ui.view">
+        <field name="name">pos.config.form.inherit.restaurant</field>
+        <field name="model">pos.config</field>
+        <field name="inherit_id" ref="point_of_sale.pos_config_view_form"/>
+        <field name="arch" type="xml">
+            <div id="category_reference" position="before">
+                <div class="col-12 col-lg-6 o_setting_box"
+                     id="is_required_guest_mode">
+                    <div class="o_setting_left_pane">
+                        <field name="required_guest_on_table"/>
+                    </div>
+                    <div class="o_setting_right_pane">
+                        <label for="required_guest_on_table"/>
+                        <span class="fa fa-lg" title="Required Guest number on table" role="img" aria-label="Required Guest number on table"/>
+                        <div class="text-muted">
+                            Before enter the table, the user must enter the number of guests
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </field>
+    </record>
+</odoo>
