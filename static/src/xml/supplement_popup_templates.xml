@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <!-- Supplement selection popup template -->
+    <t t-name="index_supplement_pos.SupplementPopup">
+        <Dialog title="'Select Supplements'" size="'xl'">
+            <div class="supplement-popup">
+                <div class="popup-body">
+                <!-- Search bar -->
+                <div class="search-container mb-3">
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="fa fa-search"/>
+                        </span>
+                        <input type="text" 
+                               class="form-control" 
+                               placeholder="Search supplements..."
+                               t-model="state.searchTerm"
+                               t-on-input="onSearchChange"/>
+                    </div>
+                </div>
+                
+                <!-- Products by category -->
+                <div class="supplement-categories">
+                    <t t-foreach="Object.entries(state.filteredProducts || {})" t-as="categoryEntry" t-key="categoryEntry[0]">
+                        <div class="category-section mb-4">
+                            <h5 class="category-title">
+                                <i class="fa fa-tag me-2"/>
+                                <t t-esc="categoryEntry[0]"/>
+                            </h5>
+                            
+                            <div class="products-grid">
+                                <t t-foreach="categoryEntry[1].products" t-as="product" t-key="product.id">
+                                    <div class="product-card" 
+                                         t-att-class="product.selected ? 'selected animate-selection' : ''"
+                                         t-att-data-product-id="product.id"
+                                         t-on-click="onProductClick">
+                                        
+                                        <!-- Selection indicator -->
+                                        <div class="selection-indicator" t-if="product.selected">
+                                            <i class="fa fa-check-circle"/>
+                                        </div>
+                                        
+                                        <!-- Product image -->
+                                        <div class="product-image">
+                                            <img t-att-src="product.image_url" 
+                                                 t-att-alt="product.display_name"
+                                                 onerror="this.style.display='none'"/>
+                                            <div class="product-overlay" t-if="product.selected">
+                                                <i class="fa fa-check"/>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Product info -->
+                                        <div class="product-info">
+                                            <h6 class="product-name" t-esc="product.display_name"/>
+                                            <div class="product-price-badge">
+                                                <span class="price" t-if="product.lst_price > 0" 
+                                                      t-esc="env.utils.formatCurrency(product.lst_price)"/>
+                                                <span class="free-badge" t-else="">
+                                                    <i class="fa fa-gift me-1"/>
+                                                    Gratuit
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+                
+                <!-- No products message -->
+                <div class="no-products text-center py-4" t-if="Object.keys(state.filteredProducts || {}).length === 0">
+                    <i class="fa fa-search fa-3x text-muted mb-3"/>
+                    <p class="text-muted" t-if="state.searchTerm">
+                        Aucun supplément trouvé pour "<strong t-esc="state.searchTerm"/>"
+                    </p>
+                    <p class="text-muted" t-else="">
+                        Aucun supplément disponible
+                    </p>
+                    <button class="btn btn-sm btn-outline-secondary mt-2" t-if="state.searchTerm" t-on-click="() => { this.state.searchTerm = ''; this.updateFilteredProducts(); }">
+                        <i class="fa fa-times me-1"/>
+                        Effacer la recherche
+                    </button>
+                </div>
+                </div>
+            </div>
+            <t t-set-slot="footer">
+                <button class="btn btn-secondary" t-on-click="cancel">
+                    Cancel
+                </button>
+                <button class="btn btn-primary" t-on-click="confirm">
+                    <i class="fa fa-check me-2"/>
+                    Confirm Selection
+                </button>
+            </t>
+        </Dialog>
+    </t>
+
+    <!-- Category Product Accompaniment Popup template -->
+    <t t-name="index_supplement_pos.CategoryProductAccPopup">
+        <Dialog title="'Select Supplements'" size="'xl'">
+            <div class="supplement-popup">
+                <div class="popup-body">
+                <!-- Search bar -->
+                <div class="search-container mb-3">
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="fa fa-search"/>
+                        </span>
+                        <input type="text" 
+                               class="form-control" 
+                               placeholder="Rechercher des suppléments..."
+                               t-model="state.searchTerm"
+                               t-on-input="onSearchChange"/>
+                    </div>
+                </div>
+                
+                <!-- Selection summary -->
+                <div class="selection-summary mb-3" t-if="state.selectedProducts.size > 0">
+                    <div class="alert alert-info">
+                        <i class="fa fa-check-circle me-2"/>
+                        <strong><t t-esc="state.selectedProducts.size"/> supplément(s) sélectionné(s)</strong>
+                        <span class="float-end">
+                            <i class="fa fa-info-circle me-1"/>
+                            Cliquez sur Confirmer pour ajouter
+                        </span>
+                    </div>
+                </div>
+                
+                <!-- Products by category -->
+                <div class="supplement-categories">
+                    <t t-foreach="Object.entries(state.filteredProducts || {})" t-as="categoryEntry" t-key="categoryEntry[0]">
+                        <div class="category-section mb-4">
+                            <h5 class="category-title">
+                                <i class="fa fa-tag me-2"/>
+                                <t t-esc="categoryEntry[0]"/>
+                            </h5>
+                            
+                            <div class="products-grid">
+                                <t t-foreach="categoryEntry[1].products" t-as="product" t-key="product.id">
+                                    <div class="product-card" 
+                                         t-att-class="product.selected ? 'selected animate-selection' : ''"
+                                         t-att-data-product-id="product.id"
+                                         t-on-click="onProductClick">
+                                        
+                                        <!-- Selection indicator -->
+                                        <div class="selection-indicator" t-if="product.selected">
+                                            <i class="fa fa-check-circle"/>
+                                        </div>
+                                        
+                                        <!-- Product image -->
+                                        <div class="product-image">
+                                            <img t-att-src="product.image_url" 
+                                                 t-att-alt="product.display_name"
+                                                 onerror="this.style.display='none'"/>
+                                            <div class="product-overlay" t-if="product.selected">
+                                                <i class="fa fa-check"/>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Product info -->
+                                        <div class="product-info">
+                                            <h6 class="product-name" t-esc="product.display_name"/>
+                                            <div class="product-price-badge">
+                                                <span class="price" t-if="product.lst_price > 0" 
+                                                      t-esc="env.utils.formatCurrency(product.lst_price)"/>
+                                                <span class="free-badge" t-else="">
+                                                    <i class="fa fa-gift me-1"/>
+                                                    Gratuit
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+                
+                <!-- No products message -->
+                <div class="no-products text-center py-4" t-if="Object.keys(state.filteredProducts || {}).length === 0">
+                    <i class="fa fa-search fa-3x text-muted mb-3"/>
+                    <p class="text-muted" t-if="state.searchTerm">
+                        Aucun supplément trouvé pour "<strong t-esc="state.searchTerm"/>"
+                    </p>
+                    <p class="text-muted" t-else="">
+                        Aucun supplément disponible
+                    </p>
+                    <button class="btn btn-sm btn-outline-secondary mt-2" t-if="state.searchTerm" t-on-click="() => { this.state.searchTerm = ''; this.updateFilteredProducts(); }">
+                        <i class="fa fa-times me-1"/>
+                        Effacer la recherche
+                    </button>
+                </div>
+                </div>
+            </div>
+            <t t-set-slot="footer">
+                <button class="btn btn-secondary" t-on-click="cancel">
+                    Cancel
+                </button>
+                <button class="btn btn-primary" t-on-click="confirm">
+                    <i class="fa fa-check me-2"/>
+                    Confirm Selection
+                </button>
+            </t>
+        </Dialog>
+    </t>
+</templates> 

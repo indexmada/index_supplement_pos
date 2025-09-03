@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    
+    <!-- PERSONNALISATION #1: Étendre le template Orderline standard pour afficher les suppléments -->
+    <t t-name="index_supplement_pos.OrderlineWithSupplements" t-inherit="point_of_sale.Orderline" t-inherit-mode="extension">
+        <xpath expr="//ul[@class='info-list d-flex flex-column']" position="inside">
+            <!-- Affichage des suppléments après chaque ligne -->
+            <t t-if="line.accompaniments and line.accompaniments.length > 0">
+                <li class="accompaniments-section mt-2 p-2 bg-light rounded">
+                    <div class="accompaniments-header">
+                        <i class="fa fa-cutlery text-success me-1"/>
+                        <span class="text-success fw-bold">Suppléments:</span>
+                    </div>
+                    <div class="accompaniment-items">
+                        <t t-foreach="line.accompaniments" t-as="acc" t-key="acc.name">
+                            <div class="accompaniment-item d-flex justify-content-between align-items-center">
+                                <div class="accompaniment-info">
+                                    <span class="accompaniment-name" t-esc="acc.name"/>
+                                    <t t-if="acc.quantity > 1">
+                                        <span class="accompaniment-qty ms-1">x<t t-esc="acc.quantity"/></span>
+                                    </t>
+                                </div>
+                                <div class="accompaniment-price">
+                                    <t t-if="acc.price > 0">
+                                        <span class="text-muted">(+<t t-esc="acc.price_formatted"/>)</span>
+                                    </t>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                    <t t-if="line.accompaniment_total > 0">
+                        <div class="accompaniment-total mt-2 pt-2 border-top">
+                            <strong>Total suppléments: <t t-esc="line.accompaniment_total_formatted"/></strong>
+                        </div>
+                    </t>
+                </li>
+            </t>
+        </xpath>
+    </t>
+    
+    <!-- PERSONNALISATION #2: Étendre le template OrderReceipt standard pour utiliser notre Orderline personnalisé -->
+    <t t-name="index_supplement_pos.OrderReceiptWithSupplements" t-inherit="point_of_sale.OrderReceipt" t-inherit-mode="extension">
+        <xpath expr="//Orderline" position="replace">
+            <index_supplement_pos.OrderlineWithSupplements 
+                basic_receipt="props.basic_receipt" 
+                line="omit(scope.line, 'customerNote')" 
+                class="{ 'px-0': true }" 
+                showTaxGroupLabels="showTaxGroupLabels">
+                <li t-if="line.customerNote" class="customer-note w-100 p-2 my-1 rounded text-break">
+                    <i class="fa fa-sticky-note me-1" role="img" aria-label="Customer Note" title="Customer Note"/>
+                    <t t-esc="line.customerNote" />
+                </li>
+            </index_supplement_pos.OrderlineWithSupplements>
+        </xpath>
+    </t>
+    
+    <!-- PERSONNALISATION #3: Étendre le template CustomOrderReceipt du module indx_pos_floor_table -->
+    <t t-name="index_supplement_pos.CustomOrderReceiptWithSupplements" t-inherit="indx_pos_floor_table.CustomOrderReceipt" t-inherit-mode="extension">
+        <xpath expr="//div[@class='orderline-item mb-2 p-2 border-bottom']" position="inside">
+            <!-- Affichage des suppléments après chaque ligne dans le design personnalisé -->
+            <t t-if="line.accompaniments and line.accompaniments.length > 0">
+                <div class="accompaniments-section mt-2 p-2 bg-light rounded">
+                    <div class="accompaniments-header">
+                        <i class="fa fa-cutlery text-success me-1"/>
+                        <span class="text-success fw-bold">Suppléments:</span>
+                    </div>
+                    <div class="accompaniment-items">
+                        <t t-foreach="line.accompaniments" t-as="acc" t-key="acc.name">
+                            <div class="accompaniment-item d-flex justify-content-between align-items-center">
+                                <div class="accompaniment-info">
+                                    <span class="accompaniment-name" t-esc="acc.name"/>
+                                    <t t-if="acc.quantity > 1">
+                                        <span class="accompaniment-qty ms-1">x<t t-esc="acc.quantity"/></span>
+                                    </t>
+                                </div>
+                                <div class="accompaniment-price">
+                                    <t t-if="acc.price > 0">
+                                        <span class="text-muted">(+<t t-esc="acc.price_formatted"/>)</span>
+                                    </t>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                    <t t-if="line.accompaniment_total > 0">
+                        <div class="accompaniment-total mt-2 pt-2 border-top">
+                            <strong>Total suppléments: <t t-esc="line.accompaniment_total_formatted"/></strong>
+                        </div>
+                    </t>
+                </div>
+            </t>
+        </xpath>
+    </t>
+    
+    <!-- PERSONNALISATION #4: Étendre le template de la table dans CustomOrderReceipt -->
+    <t t-name="index_supplement_pos.CustomOrderReceiptTableWithSupplements" t-inherit="indx_pos_floor_table.CustomOrderReceipt" t-inherit-mode="extension">
+        <xpath expr="//td[@style='padding-top:1%; padding-bottom:1%; text-align:left;']" position="inside">
+            <!-- Affichage des suppléments dans la table du design personnalisé -->
+            <t t-if="orderline.accompaniments and orderline.accompaniments.length > 0">
+                <div class="accompaniments-section mt-1">
+                    <div class="accompaniments-header" style="font-size:12px; color:#28a745;">
+                        <i class="fa fa-cutlery me-1"/>
+                        <strong>Suppléments:</strong>
+                    </div>
+                    <div class="accompaniment-items" style="margin-left:15px;">
+                        <t t-foreach="orderline.accompaniments" t-as="acc" t-key="acc.name">
+                            <div class="accompaniment-item" style="font-size:11px; margin-bottom:2px;">
+                                <span class="accompaniment-name" t-esc="acc.name"/>
+                                <t t-if="acc.quantity > 1">
+                                    <span class="accompaniment-qty">x<t t-esc="acc.quantity"/></span>
+                                </t>
+                                <t t-if="acc.price > 0">
+                                    <span class="accompaniment-price" style="color:#6c757d;">
+                                        (+<t t-esc="acc.price_formatted"/>)
+                                    </span>
+                                </t>
+                            </div>
+                        </t>
+                    </div>
+                    <t t-if="orderline.accompaniment_total > 0">
+                        <div class="accompaniment-total" style="font-size:11px; font-weight:bold; margin-top:3px; color:#28a745;">
+                            Total suppléments: <t t-esc="orderline.accompaniment_total_formatted"/>
+                        </div>
+                    </t>
+                </div>
+            </t>
+        </xpath>
+    </t>
+    
+    <!-- PERSONNALISATION #5: NOUVEAU - Template optimisé pour les tickets de cuisine avec format similaire aux notes -->
+    <!-- Note: Ce template hérite de indx_pos_floor_table.ConsolidatedOrderChangeReceipt si disponible -->
+    <t t-name="index_supplement_pos.KitchenReceiptWithSupplements" t-inherit="indx_pos_floor_table.ConsolidatedOrderChangeReceipt" t-inherit-mode="extension">
+        <!-- Étendre l'affichage après les notes dans la section NOUVEAU -->
+        <xpath expr="//t[@t-if='additions and additions.length > 0']//div[@t-if='line.note']" position="after">
+            <!-- Affichage des suppléments après chaque ligne de produit - FORMAT SIMILAIRE AUX NOTES -->
+            <t t-if="line.accompaniments and line.accompaniments.length > 0">
+                <div class="supplements-section mx-5 mt-2" style="font-size: 104.55%;">
+                    <!-- Affichage des suppléments un par un, format similaire aux notes -->
+                        <t t-foreach="line.accompaniments" t-as="acc" t-key="acc.name">
+                        <div class="supplement-item" style="color: #28a745; font-weight: 600; margin-bottom: 2px;">
+                            <i class="fa fa-plus me-1" style="font-size: 0.8em;"/>
+                            <span class="supplement-name" t-esc="acc.name"/>
+                                <t t-if="acc.quantity > 1">
+                                <span class="supplement-qty" style="color: #6c757d; font-weight: normal;"> x<t t-esc="acc.quantity"/></span>
+                                </t>
+                                <t t-if="acc.price > 0">
+                                <span class="supplement-price" style="color: #6c757d; font-weight: normal; font-style: italic;">
+                                    (+<t t-esc="acc.price_formatted"/>)
+                                    </span>
+                                </t>
+                            </div>
+                        </t>
+                    
+                    <!-- Total des suppléments en format note -->
+                    <t t-if="line.accompaniment_total > 0">
+                        <div class="supplement-total" style="color: #28a745; font-weight: bold; margin-top: 5px; font-style: italic;">
+                            Total suppléments: <t t-esc="line.accompaniment_total_formatted"/>
+                        </div>
+                    </t>
+                </div>
+            </t>
+        </xpath>
+        
+        <!-- Étendre l'affichage après les notes dans la section ANNULÉ -->
+        <xpath expr="//t[@t-if='removals and removals.length > 0']//div[@t-if='line.note']" position="after">
+            <!-- Affichage des suppléments après chaque ligne de produit - FORMAT SIMILAIRE AUX NOTES -->
+            <t t-if="line.accompaniments and line.accompaniments.length > 0">
+                <div class="supplements-section mx-5 mt-2" style="font-size: 104.55%;">
+                    <!-- Affichage des suppléments un par un, format similaire aux notes -->
+                    <t t-foreach="line.accompaniments" t-as="acc" t-key="acc.name">
+                        <div class="supplement-item" style="color: #28a745; font-weight: 600; margin-bottom: 2px;">
+                            <i class="fa fa-plus me-1" style="font-size: 0.8em;"/>
+                            <span class="supplement-name" t-esc="acc.name"/>
+                            <t t-if="acc.quantity > 1">
+                                <span class="supplement-qty" style="color: #6c757d; font-weight: normal;"> x<t t-esc="acc.quantity"/></span>
+                            </t>
+                            <t t-if="acc.price > 0">
+                                <span class="supplement-price" style="color: #6c757d; font-weight: normal; font-style: italic;">
+                                    (+<t t-esc="acc.price_formatted"/>)
+                                </span>
+                            </t>
+                        </div>
+                    </t>
+                    
+                    <!-- Total des suppléments en format note -->
+                    <t t-if="line.accompaniment_total > 0">
+                        <div class="supplement-total" style="color: #28a745; font-weight: bold; margin-top: 5px; font-style: italic;">
+                            Total suppléments: <t t-esc="line.accompaniment_total_formatted"/>
+                        </div>
+                    </t>
+                    </div>
+            </t>
+        </xpath>
+    </t>
+    
+    <!-- PERSONNALISATION #6: Template optimisé pour OrderChangeReceipt standard avec format similaire aux notes -->
+    <t t-name="index_supplement_pos.OrderChangeReceiptWithSupplements" t-inherit="point_of_sale.OrderChangeReceipt" t-inherit-mode="extension">
+        <!-- Étendre l'affichage après les notes existantes -->
+        <xpath expr="//div[@t-if='line.note']" position="after">
+            <!-- Affichage des suppléments après chaque ligne de produit - FORMAT SIMILAIRE AUX NOTES -->
+            <t t-if="line.accompaniments and line.accompaniments.length > 0">
+                <div class="supplements-section mx-5 mt-2" style="font-size: 74.8%;">
+                    <!-- Affichage des suppléments un par un, format similaire aux notes -->
+                        <t t-foreach="line.accompaniments" t-as="acc" t-key="acc.name">
+                        <div class="supplement-item" style="color: #28a745; font-weight: 600; margin-bottom: 2px;">
+                            <i class="fa fa-plus me-1" style="font-size: 0.8em;"/>
+                            <span class="supplement-name" t-esc="acc.name"/>
+                                <t t-if="acc.quantity > 1">
+                                <span class="supplement-qty" style="color: #6c757d; font-weight: normal;"> x<t t-esc="acc.quantity"/></span>
+                                </t>
+                                <t t-if="acc.price > 0">
+                                <span class="supplement-price" style="color: #6c757d; font-weight: normal; font-style: italic;">
+                                    (+<t t-esc="acc.price_formatted"/>)
+                                    </span>
+                                </t>
+                            </div>
+                    </t>
+                    
+                    <!-- Total des suppléments en format note -->
+                    <t t-if="line.accompaniment_total > 0">
+                        <div class="supplement-total" style="color: #28a745; font-weight: bold; margin-top: 5px; font-style: italic;">
+                            Total suppléments: <t t-esc="line.accompaniment_total_formatted"/>
+                        </div>
+                    </t>
+                </div>
+            </t>
+        </xpath>
+    </t>
+    
+    <!-- PERSONNALISATION #7: Template pour afficher les suppléments comme des notes dans les tickets standard -->
+    <t t-name="index_supplement_pos.SupplementsAsNotesReceipt" t-inherit="point_of_sale.OrderChangeReceipt" t-inherit-mode="extension">
+        <!-- Étendre l'affichage après les notes existantes -->
+        <xpath expr="//div[@t-if='line.note']" position="after">
+            <!-- Affichage des suppléments comme des notes - FORMAT IDENTIQUE AUX NOTES -->
+            <t t-if="line.accompaniments and line.accompaniments.length > 0">
+                <div class="supplements-as-notes mx-5" style="font-size: 91%;">
+                    <!-- Affichage des suppléments un par un, format identique aux notes -->
+                    <t t-foreach="line.accompaniments" t-as="acc" t-key="acc.name">
+                        <div class="supplement-note" style="font-style: italic; color: #28a745; font-weight: bold; margin-bottom: 2px;">
+                            <i class="fa fa-plus me-1" style="font-size: 0.8em;"/>
+                            <span t-esc="acc.name"/>
+                            <t t-if="acc.quantity > 1">
+                                <span style="color: #6c757d; font-weight: normal;"> x<t t-esc="acc.quantity"/></span>
+                            </t>
+                            <t t-if="acc.price > 0">
+                                <span style="color: #6c757d; font-weight: normal;">
+                                    (+<t t-esc="acc.price_formatted"/>)
+                                </span>
+                        </t>
+                    </div>
+                    </t>
+                    
+                    <!-- Total des suppléments comme note -->
+                    <t t-if="line.accompaniment_total > 0">
+                        <div class="supplement-total-note" style="font-style: italic; color: #28a745; font-weight: bold; margin-top: 5px;">
+                            Total suppléments: <t t-esc="line.accompaniment_total_formatted"/>
+                        </div>
+                    </t>
+                </div>
+            </t>
+        </xpath>
+    </t>
+    
+    <!-- PERSONNALISATION #8: Template de fallback pour OrderChangeReceipt si indx_pos_floor_table n'est pas disponible -->
+    <t t-name="index_supplement_pos.OrderChangeReceiptFallback" t-inherit="point_of_sale.OrderChangeReceipt" t-inherit-mode="extension">
+        <!-- Étendre l'affichage après les notes existantes -->
+        <xpath expr="//div[@t-if='line.note']" position="after">
+            <!-- Affichage des suppléments après chaque ligne de produit - FORMAT SIMILAIRE AUX NOTES -->
+            <t t-if="line.accompaniments and line.accompaniments.length > 0">
+                <div class="supplements-section mx-5 mt-2" style="font-size: 74.8%;">
+                    <!-- Affichage des suppléments un par un, format similaire aux notes -->
+                        <t t-foreach="line.accompaniments" t-as="acc" t-key="acc.name">
+                        <div class="supplement-item" style="color: #28a745; font-weight: 600; margin-bottom: 2px;">
+                            <i class="fa fa-plus me-1" style="font-size: 0.8em;"/>
+                            <span class="supplement-name" t-esc="acc.name"/>
+                                <t t-if="acc.quantity > 1">
+                                <span class="supplement-qty" style="color: #6c757d; font-weight: normal;"> x<t t-esc="acc.quantity"/></span>
+                                </t>
+                                <t t-if="acc.price > 0">
+                                <span class="supplement-price" style="color: #6c757d; font-weight: normal; font-style: italic;">
+                                    (+<t t-esc="acc.price_formatted"/>)
+                                    </span>
+                                </t>
+                            </div>
+                        </t>
+                    
+                    <!-- Total des suppléments en format note -->
+                    <t t-if="line.accompaniment_total > 0">
+                        <div class="supplement-total" style="color: #28a745; font-weight: bold; margin-top: 5px; font-style: italic;">
+                            Total suppléments: <t t-esc="line.accompaniment_total_formatted"/>
+                        </div>
+                    </t>
+                </div>
+            </t>
+        </xpath>
+    </t>
+    
+</templates>

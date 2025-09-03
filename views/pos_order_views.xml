@@ -1,44 +1,99 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-
-    <!-- View pos.order form -->
-    <record id="view_pos_order_form" model="ir.ui.view">
-        <field name="name">view.pos.order.form</field>
-        <field name="model">pos.order</field>
-        <field name="inherit_id" ref="point_of_sale.view_pos_pos_form"/>
-        <field name="arch" type="xml">
-            <xpath expr="//notebook" position="inside">
-                <page string="Acc &amp; Sauces">
-                    <group name="stock">
-                        <field name="picking_accompaniment_id" string="Mouvement"/>
-                    </group>
-                    <group name="accompaniment" string="Détails">
-                        <field name="accompaniment_ids" colspan="4" nolabel="1">
-                            <tree string="Order lines" editable="bottom">
+    <data>
+        <!-- POS Order Form View Inherit -->
+        <record id="view_pos_order_form_inherit" model="ir.ui.view">
+            <field name="name">pos.order.form.inherit</field>
+            <field name="model">pos.order</field>
+            <field name="inherit_id" ref="point_of_sale.view_pos_pos_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='amount_total']" position="after">
+                    <field name="total_accompaniment_amount" widget="monetary"/>
+                </xpath>
+                <xpath expr="//page[@name='extra']" position="after">
+                    <page string="Accompaniments" name="accompaniments">
+                        <group>
+                            <field name="picking_accompaniment_id" readonly="1"/>
+                            <field name="total_accompaniment_amount" readonly="1" widget="monetary"/>
+                        </group>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+        
+        <!-- POS Order Line Form View Inherit -->
+        <record id="view_pos_order_line_form_inherit" model="ir.ui.view">
+            <field name="name">pos.order.line.form.inherit</field>
+            <field name="model">pos.order.line</field>
+            <field name="inherit_id" ref="point_of_sale.view_pos_order_line_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='price_unit']" position="after">
+                    <field name="accompaniment_total" widget="monetary"/>
+                    <field name="has_accompaniments"/>
+                    <field name="accompaniment_note"/>
+                </xpath>
+            </field>
+        </record>
+        
+        <!-- POS Accompaniment Line Form View -->
+        <record id="view_pos_accompaniment_line_form" model="ir.ui.view">
+            <field name="name">pos.accompaniment.line.form</field>
+            <field name="model">pos.accompaniment.line</field>
+            <field name="arch" type="xml">
+                <form string="Accompaniment Line">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
                                 <field name="product_id"/>
                                 <field name="quantity"/>
-                                <field name="line_id" invisible="1"/>
-                                <field name="price" widget="monetary"/>
-                                <field name="status" />
-                            </tree>
-                            <form string="Order lines" editable="bottom">
-                                <group>
-                                    <group>
-                                        <field name="name"/>
-                                        <field name="product_id"/>
-                                        <field name="quantity"/>
-                                    </group>
-                                    <group>
-                                        <field name="line_id" invisible="1"/>
-                                        <field name="price" widget="monetary"/>
-                                        <field name="status" />
-                                    </group>
-                                </group>
-                            </form>
-                        </field>
-                    </group>
-                </page>
-            </xpath>
-        </field>
-    </record>
+                            </group>
+                            <group>
+                                <field name="price"/>
+                                <field name="total_price"/>
+                                <field name="status"/>
+                            </group>
+                        </group>
+                        <group>
+                            <field name="line_id"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        
+        <!-- POS Accompaniment Line List View -->
+        <record id="view_pos_accompaniment_line_list" model="ir.ui.view">
+            <field name="name">pos.accompaniment.line.list</field>
+            <field name="model">pos.accompaniment.line</field>
+            <field name="arch" type="xml">
+                <list string="Accompaniment Lines">
+                    <field name="name"/>
+                    <field name="product_id"/>
+                    <field name="quantity"/>
+                    <field name="price"/>
+                    <field name="total_price"/>
+                    <field name="status"/>
+                    <field name="line_id"/>
+                </list>
+            </field>
+        </record>
+        
+        <!-- POS Accompaniment Line Action -->
+        <record id="action_pos_accompaniment_line" model="ir.actions.act_window">
+            <field name="name">Accompaniment Lines</field>
+            <field name="res_model">pos.accompaniment.line</field>
+            <field name="view_mode">list,form</field>
+            <field name="view_id" ref="view_pos_accompaniment_line_list"/>
+        </record>
+        
+        <!-- Menu item for Accompaniment Lines -->
+        <menuitem
+            id="menu_pos_accompaniment_line"
+            name="Accompaniment Lines"
+            parent="point_of_sale.menu_point_root"
+            action="action_pos_accompaniment_line"
+            sequence="10"/>
+            
+    </data>
 </odoo>

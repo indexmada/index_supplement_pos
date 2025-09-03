@@ -1,0 +1,46 @@
+{
+	"folders": [
+		{
+			"name": "index_supplement_pos",
+			"path": ".."
+		},
+		{
+			"name": "point_of_sale",
+			"path": "../../../../../odoo18.2/odoo/addons/point_of_sale"
+		},
+		{
+			"name": "index_intelligent_summary",
+			"path": "../../pos_module/index_intelligent_summary"
+		},
+		{
+			"name": "pos_product_stock",
+			"path": "../../pos_product_stock"
+		},
+		{
+			"name": "indx_pos_floor_table",
+			"path": "../../pos_module/indx_pos_floor_table"
+		},
+		{
+			"name": "indx_pos_payment_method",
+			"path": "../../pos_module/indx_pos_payment_method"
+		},
+		{
+			"name": "pos_restaurant",
+			"path": "../../../../../odoo18.2/odoo/addons/pos_restaurant"
+		},
+		{
+			"name": "pos_receipt_viewer",
+			"path": "../../pos_receipt_viewer"
+		},
+		{
+			"name": "pos_tcp_esc_printer",
+			"path": "../../pos_tcp_esc_printer"
+		},
+		{
+			"name": "custom_receipts_for_pos",
+			"path": "../../custom_receipts_for_pos"
+		}
+	],
+	"settings": {
+	}
+}

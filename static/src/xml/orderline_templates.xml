@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <!-- Extend orderline template to show accompaniments -->
+    <t t-name="point_of_sale.Orderline" t-inherit="point_of_sale.Orderline" t-inherit-mode="extension">
+        <xpath expr="//t[@t-slot='default']" position="inside">
+            <!-- Get accompaniments data -->
+            <t t-set="accompaniments" t-value="this.getAccompaniments()"/>
+            
+            <!-- Accompaniments section (similar to "To Serve") -->
+            <t t-if="accompaniments.accompaniment_ids and accompaniments.accompaniment_ids.length > 0">
+                <li class="accompaniments-section">
+                    <div class="accompaniments-header">
+                        <i class="fa fa-cutlery text-success me-1"/>
+                        <span class="text-success font-weight-bold">Suppléments:</span>
+                    </div>
+                    <t t-foreach="accompaniments.accompaniment_ids" t-as="accompaniment" t-key="accompaniment.product_id">
+                        <div class="accompaniment-item">
+                            <i class="fa fa-plus text-success me-1"/>
+                            <span class="accompaniment-name" t-esc="accompaniment.name"/>
+                            <span class="accompaniment-price" t-esc="env.utils.formatCurrency(accompaniment.price || 0)"/>
+                        </div>
+                    </t>
+                </li>
+            </t>
+            
+            <!-- Supplement button -->
+            <li class="supplement-button-container">
+                <button class="btn btn-sm btn-outline-primary supplement-btn" 
+                        t-on-click="(ev) => this.openSupplementPopup(ev, line)"
+                        title="Add supplements">
+                    <i class="fa fa-plus me-1"/>
+                    <span>Supplements</span>
+                    <t t-if="accompaniments.accompaniment_ids and accompaniments.accompaniment_ids.length > 0">
+                        <span class="badge badge-success ms-1" t-esc="accompaniments.accompaniment_ids.length"/>
+                    </t>
+                </button>
+            </li>
+            
+            <!-- Accompaniment total display -->
+            <li t-if="accompaniments.accompaniment_total and accompaniments.accompaniment_total > 0" class="accompaniment-total">
+                <small class="text-muted">
+                    + <t t-esc="env.utils.formatCurrency(accompaniments.accompaniment_total)"/> (supplements)
+                </small>
+            </li>
+        </xpath>
+    </t>
+</templates> 
